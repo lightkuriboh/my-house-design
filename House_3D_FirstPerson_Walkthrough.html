@@ -2514,10 +2514,9 @@
       rects.push([4.44, 4.26, 6.07, 4.54], [6.91, 4.38, 9.75, 4.54]);
       // WC1 partition (open door Z=1.85..2.60)
       rects.push([7.76, 0.11, 7.91, 1.84], [7.76, 2.61, 7.91, 2.78], [7.76, 2.64, 9.52, 2.78]);
-      // Stairwell exterior walls (blocking courtyard & PN1 from entering stair side walls)
+      // Stairwell side walls and the continuous south wall shared with the bedroom.
       rects.push([3.39, 4.50, 3.54, 6.81], [5.73, 4.50, 5.92, 6.81]);
-      // PN1 East & South outer walls
-      rects.push([9.56, 4.50, 9.75, 6.81], [5.73, 6.65, 9.75, 6.81]);
+      rects.push([9.56, 4.50, 9.75, 6.81], [3.39, 6.65, 9.75, 6.81]);
       // Courtyard South low curb
       rects.push([-2.15, 6.78, 3.45, 7.36]);
       // Key solid furniture colliders (gentle clearance so you never walk inside counters/beds/fridge)
@@ -3272,26 +3271,27 @@
       player.x += dx; player.z += dz;
       return true;
     }
-    const nx = player.x + dx, nz = player.z + dz;
+    const previousZ = player.z;
+    const nx = player.x + dx, nz = previousZ + dz;
     let moved = false;
     if (!pointBlocked(nx, player.z, player.level, doorsOpen)) { player.x = nx; moved = true; }
     if (!pointBlocked(player.x, nz, player.level, doorsOpen)) { player.z = nz; moved = true; }
 
-    // Seamless level transitions at Staircase portals!
+    // Change levels only when crossing the north stair threshold through a doorway.
     const px = player.x, pz = player.z;
-    if (player.level === 'F1') {
-      if (pz > 4.44 && px >= 3.50 && px <= 4.44) player.level = 'STAIR1';
-    } else if (player.level === 'STAIR1') {
-      if (pz <= 4.44 && px < 4.55) player.level = 'F1';
-      else if (pz <= 4.44 && px >= 4.78) player.level = 'F2';
-    } else if (player.level === 'F2') {
-      if (pz > 4.44 && px >= 4.82 && px <= 5.76) player.level = 'STAIR1';
-      else if (pz > 4.44 && px >= 3.50 && px <= 4.44) player.level = 'STAIR2';
-    } else if (player.level === 'STAIR2') {
-      if (pz <= 4.44 && px < 4.55) player.level = 'F2';
-      else if (pz <= 4.44 && px >= 4.78) player.level = 'ROOF';
-    } else if (player.level === 'ROOF') {
-      if (pz > 4.44 && px >= 4.80 && px <= 5.76) player.level = 'STAIR2';
+    const westDoor = px >= 3.53 && px <= 4.39;
+    const eastDoor = px >= 4.88 && px <= 5.74;
+    const threshold = 4.44;
+    if (previousZ <= threshold && pz > threshold) {
+      if (player.level === 'F1' && westDoor) player.level = 'STAIR1';
+      else if (player.level === 'F2' && eastDoor) player.level = 'STAIR1';
+      else if (player.level === 'F2' && westDoor) player.level = 'STAIR2';
+      else if (player.level === 'ROOF' && eastDoor) player.level = 'STAIR2';
+    } else if (previousZ > threshold && pz <= threshold) {
+      if (player.level === 'STAIR1' && westDoor) player.level = 'F1';
+      else if (player.level === 'STAIR1' && eastDoor) player.level = 'F2';
+      else if (player.level === 'STAIR2' && westDoor) player.level = 'F2';
+      else if (player.level === 'STAIR2' && eastDoor) player.level = 'ROOF';
     }
 
     const targetY = getFloorElevation(player.x, player.z, player.level);
