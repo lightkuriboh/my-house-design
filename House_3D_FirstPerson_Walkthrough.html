@@ -1553,23 +1553,23 @@
   op.box(4.86, 9.05, 4.40, 5.74, 9.45, 4.51, C_STAIRWALL, 1);
   op.box(5.74, 6.85, 4.40, 5.905, 9.45, 4.51, C_STAIRWALL, 1);
   addOpenDoorH(op, 5.74, 4.455, 0.88, 6.85, 9.05, -1, false, true); // Walk-out door folded flat against roof parapet!
-  // South Stairwell Wall with Tall Panoramic 4-Pane Window (Y=1.40..5.65) + Upper Tum Window (Y=6.20..8.65)
-  op.box(3.41, 0.13, 6.67, 4.05, 9.45, 6.79, C_STAIRWALL, 1);
-  op.box(5.25, 0.13, 6.67, 5.905, 9.45, 6.79, C_STAIRWALL, 1);
-  op.box(4.05, 0.13, 6.67, 5.25, 1.40, 6.79, C_STAIRWALL, 1);
-  op.box(4.05, 5.65, 6.67, 5.25, 6.20, 6.79, C_STAIRWALL, 1);
-  op.box(4.05, 8.65, 6.67, 5.25, 9.45, 6.79, C_STAIRWALL, 1);
-  // Lower & Upper Stairwell glass windows
-  for (const [wy0, wy1, panes] of [[1.40, 5.65, 4], [6.20, 8.65, 2]]) {
-    op.box(4.05, wy0, 6.69, 4.11, wy1, 6.77, C_CHARCOAL, 5);
-    op.box(5.19, wy0, 6.69, 5.25, wy1, 6.77, C_CHARCOAL, 5);
-    for (let i=0; i<=panes; i++) {
-      const ty = lerp(wy0, wy1, i/panes);
-      op.box(4.05, ty-0.025, 6.69, 5.25, ty+0.025, 6.77, C_CHARCOAL, 5);
-    }
-    gls.quad([4.11, wy0+0.03, 6.73], [5.19, wy0+0.03, 6.73],
-             [5.19, wy1-0.03, 6.73], [4.11, wy1-0.03, 6.73], C_GLASS, 9, [0,0,1]);
+  // High daylight windows leave solid wall behind the winders on both flights.
+  const stairWindows = [[3.40, 4.55], [6.70, 7.85]];
+  const stairSouthInside = 6.67, stairSouthOutside = 6.79;
+  const stairWindowLeft = 4.05, stairWindowRight = 5.25;
+  const stairWindowCenter = (stairSouthInside + stairSouthOutside) / 2;
+  op.box(3.41, 0.13, stairSouthInside, stairWindowLeft, 9.45, stairSouthOutside, C_STAIRWALL, 1);
+  op.box(stairWindowRight, 0.13, stairSouthInside, 5.905, 9.45, stairSouthOutside, C_STAIRWALL, 1);
+  let stairWallBase = 0.13;
+  for (const [sill, head] of stairWindows) {
+    op.box(stairWindowLeft, stairWallBase, stairSouthInside, stairWindowRight, sill, stairSouthOutside, C_STAIRWALL, 1);
+    addWindowFixedSouth(op, gls, stairWindowLeft, stairWindowRight, sill, head, stairWindowCenter, 1);
+    const divider = (sill + head) / 2;
+    op.box(stairWindowLeft, divider - 0.025, stairWindowCenter - 0.04,
+           stairWindowRight, divider + 0.025, stairWindowCenter + 0.04, C_CHARCOAL, 5);
+    stairWallBase = head;
   }
+  op.box(stairWindowLeft, stairWallBase, stairSouthInside, stairWindowRight, 9.45, stairSouthOutside, C_STAIRWALL, 1);
   // Bolted lightweight insulated steel flat roof over Tum Thang (Y = 9.45 .. 9.63)
   op.box(3.28, 9.45, 4.40, 6.04, 9.63, 6.94, C_STEELROOF, 5);
   op.box(3.53, 9.38, 4.51, 5.74, 9.45, 6.67, C_CEIL, 1);
@@ -1578,7 +1578,7 @@
   function buildUStairFlight(yStart, yEnd) {
     const dy = (yEnd - yStart) / 21.0;
     const x0 = 3.53, wx0 = 4.39, wx1 = 4.88, x1 = 5.74;
-    const zStart = 4.43, wy1 = 5.81, zEnd = 6.67;
+    const zStart = 4.43, wy1 = 5.81, zEnd = stairSouthInside;
     const treadD = (wy1 - zStart) / 6.0; // 0.23m
     // West leg: 6 steps (risers 1..6)
     for (let i=0; i<6; i++) {
@@ -2454,7 +2454,7 @@
       desc: 'Quiet 1-story garden bedroom • 1.5×2.0m platform bed • 1.35m wardrobe • 1.8m wide South window' },
     stair1:    { name: 'External 21-Step U-Staircase', floor: 'F1→F2', area: '4.8 m²', level: 'STAIR1',
       pos: [3.96, 0.42, 4.65], yaw: 2.86, pitch: 0.22,
-      desc: '860mm wide oak-tread steel U-stair outside core • Tall 4-pane South window • Walk straight up to F2 & Roof' },
+      desc: '860mm wide oak-tread steel U-stair • Solid wall at the winders • High south daylight windows' },
     working:   { name: 'Working Room (Phòng Làm Việc)', floor: 'F2', area: '14.9 m²', level: 'F2',
       pos: [0.92, 3.55, 3.58], yaw: 0.56, pitch: -0.04,
       desc: '1.65m walnut standing desk by West window • 2.2m walnut bookshelf • 1.48m studio upright piano & padded bench' },
@@ -2612,7 +2612,7 @@
         name: level === 'STAIR1' ? 'External Staircase (F1 → F2)' : 'Tum Thang Staircase (F2 → Roof)',
         floor: level === 'STAIR1' ? 'F1→F2' : 'F2→Roof',
         area: '4.8 m²',
-        desc: 'Walkable 21-step solid oak & steel U-stair • Tall South daylight window • Zero interior floor loss'
+        desc: '21-step oak and steel U-stair • Solid wall at the winders • High south daylight window'
       };
     }
     if (level === 'F2') {
