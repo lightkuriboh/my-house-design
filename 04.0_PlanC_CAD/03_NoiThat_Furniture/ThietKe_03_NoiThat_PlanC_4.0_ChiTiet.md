@@ -1,6 +1,9 @@
-# Hồ Sơ Thiết Kế Nội Thất, Hệ Kính Low-E & Phong Thủy Cung Khôn — Phiên Bản Plan C 4.0
+# Bộ Hồ Sơ 03 / 03 — Thiết Kế Nội Thất, Đồ Gỗ, Gian Thờ & Chống Nồm Ẩm (Plan C 4.0)
 
-> **Phiên bản áp dụng:** `04.0_PlanC_CAD` (Đồng bộ 100% Kiến trúc – Kết cấu – Hệ Kính & Vật liệu `PC-KT04` – Điện Nước – Nội thất & Mô hình 3D Walkthrough `4.0`).
+> **Phân tách Hồ sơ 4.0 (3 Bộ độc lập):**
+> - **Bộ 01 (`01_KienTruc_KetCau_DienNuoc`):** Dành cho Đội Xây Thô, Sắt Thép Kết Cấu & Điện Nước (vách xây, độ sâu tường, ô chờ cửa, móng, điện nước).
+> - **Bộ 02 (`02_HoanThien_Kinh_VatLieu`):** Dành cho Đội Nhôm Kính, Ốp Lát, Trần, Sơn & Chống Thấm (kính gì hướng nào `HT-01..HT-04`).
+> - **Bộ 03 (`03_NoiThat_Furniture` — Tài liệu này):** Dành cho Xưởng Mộc / Đơn vị Thi công Nội thất & Thiết bị rời (`NT-01..NT-04` + Mô hình 3D).
 > **Hồ sơ Mệnh cục Gia chủ:**
 > - **Gia chủ (Nam):** Sinh ngày `05/12/1998` ÂL (`21/01/1999` DL — trước tiết Lập Xuân), tuổi **Mậu Dần**, mệnh Nạp âm **Thành Đầu Thổ**, Cung phi **KHÔN (Thổ) — Tây tứ mệnh**.
 > - **Mẹ gia chủ (Nữ):** Sinh ngày `08/10/1960` ÂL (`26/11/1960` DL), tuổi **Canh Tý**, mệnh Nạp âm **Bích Thượng Thổ**, Cung phi **KHÔN (Thổ) — Tây tứ mệnh**.
